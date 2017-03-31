@@ -1,0 +1,18 @@
+#!/bin/bash
+if [[ $1 ]]; then
+isofile=`(realpath $1)`
+sudo rm -rf work
+mkdir work
+cd work
+mkdir tmp
+mkdir img
+mkdir core
+sudo mount -t iso9660 -o loop "$isofile" tmp
+sudo cp -r tmp/* img
+sudo umount tmp
+cd core
+zcat ../img/boot/core.gz | sudo cpio -i -d
+cd ../..
+else
+echo "Usage: extractiso <isofile>"
+fi

@@ -1,0 +1,15 @@
+#!/bin/bash
+if [[ $1 ]]; then
+isofile=`(realpath $1)`
+cd work
+sudo rm -f img/boot/core.gz
+cd core
+sudo find | sudo cpio -o -H newc | (sudo gzip > ../core.gz)
+cd ..
+sudo mv core.gz img/boot/core.gz
+cd img
+sudo mkisofs -o "$isofile" -b boot/isolinux/isolinux.bin -c boot/isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -J -R .
+cd ../..
+else
+echo "usage: repackageiso <isofile>"
+fi
